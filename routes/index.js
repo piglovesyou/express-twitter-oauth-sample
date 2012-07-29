@@ -1,5 +1,12 @@
+
+// SECRET = require('secret-strings').EXPRESS_OAUTH_SAMPLE;
+// Edit below.
+var SECRET = {
+  CONSUMER_KEY: 'your consumer key',
+  CONSUMER_SECRET: 'you consumer secret',
+};
+
 var OAuth  = require('oauth').OAuth;
-var SECRET = require('secret-strings').EXPRESS_OAUTH_SAMPLE;
 var oa = new OAuth(
     "https://twitter.com/oauth/request_token",
     "https://twitter.com/oauth/access_token", 
@@ -8,11 +15,6 @@ var oa = new OAuth(
     "1.0",
     "http://localhost.com:3000/auth/twitter/callback",
     "HMAC-SHA1");
-
-
-/*
- * GET home page.
- */
 
 exports.index = function (req, res) {
   if(req.session.oauth && req.session.oauth.access_token) {
@@ -24,13 +26,13 @@ exports.index = function (req, res) {
   }
 };
 
-
 exports.login = function (req, res) {
   if(req.session.oauth && req.session.oauth.access_token) {
   } else {
     res.render('login');
   }
 };
+
 exports.auth = {};
 exports.auth.twitter = function(req, res){
   oa.getOAuthRequestToken(function(error, oauth_token, oauth_token_secret, results){
@@ -44,6 +46,7 @@ exports.auth.twitter = function(req, res){
     }
   });
 };
+
 exports.auth.twitter.callback = function(req, res, next){
   if (req.session.oauth) {
     req.session.oauth.verifier = req.query.oauth_verifier;
@@ -63,9 +66,9 @@ exports.auth.twitter.callback = function(req, res, next){
   } else
     next(new Error("you're not supposed to be here."));
 };
+
 exports.index = function (req, res) {
   if(req.session.oauth && req.session.oauth.access_token) {
-    // コッチ。
     res.render('index', {
       screen_name: req.session.twitter.screen_name
     });
@@ -73,6 +76,7 @@ exports.index = function (req, res) {
     res.redirect("/login");
   }
 };
+
 exports.post = function (req, res) {
   if(req.session.oauth && req.session.oauth.access_token) {
     var text = req.body.text;
@@ -92,7 +96,9 @@ exports.post = function (req, res) {
     res.send('fail.');
   }
 };
+
 exports.logout = function (req, res) {
   req.session.destroy();
   res.render('logout');
 };
+
