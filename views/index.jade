@@ -1,0 +1,22 @@
+h1 Successfully authenticated.
+
+// index.jade
+form#tweet
+  input(type="text", name="text")
+  input(type="submit", value="ツイート。")
+
+p
+  a(href='/logout') -Logout-
+
+script
+  // client side script
+  $('#tweet').submit(function (e) {
+    var text = e.target.text.value;
+    $.ajax({
+      url: '/post',
+      type: 'POST',
+      data: {text: text},
+      success: function (e) {alert('Successfully tweeted.');}
+    });
+    return false;
+  });
